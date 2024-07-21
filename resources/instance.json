@@ -1,0 +1,288 @@
+{
+    "name"    : "ping pong",
+    "version" : 
+    {
+        "major" : 0,
+        "minor" : 0,
+        "patch" : 1
+    },
+    "window" :
+    {
+        "width"  : 1280,
+        "height" : 720,
+        "title"  : "Ping Pong"
+    },
+    "input" :
+    {
+        "name"              : "default input",
+        "mouse sensitivity" : 1.0,
+        "binds"             :
+        {
+            "PLAYER 1 UP"   : [ "W" ],
+            "PLAYER 1 DOWN" : [ "S" ],
+            "PLAYER 2 UP"   : [ "UP" ],
+            "PLAYER 2 DOWN" : [ "DOWN" ],
+            "SERVE"         : [ "SPACE" ],
+            "QUIT"          : [ "ESCAPE" ]
+        }
+    },
+    "schedule" :
+    {
+        "name"    : "default schedule",
+        "repeat"  : true,
+        "threads" :
+        {
+            "main" : 
+            [
+                { "task" : "sdl2 poll" },
+                { "task" : "pre ai" },
+                { "task" : "ai" },
+                { "task" : "user code" },
+                { "task" : "render" }
+            ]
+        }
+    },
+    "initial scene" :
+    {
+        "name"     : "default scene",
+        "entities" :
+        {
+            "floor" : 
+            {
+                "shader"    : "holdout",
+                "transform" :
+                {
+                    "location" : [ 0.0, 0.0, 0.0 ],
+                    "rotation" : [ 0.0, 0.0, 0.0 ],
+                    "scale"    : [ 1.0, 1.0, 1.0 ]
+                },
+                "mesh" :
+                {
+                    "plane" : 
+                    {
+                        "primative" : "plane",
+                        "shader"    : "holdout",
+                        "transform" : 
+                        {
+                            "location" : [ 0.0 , 0.0 , 0.0 ],
+                            "rotation" : [ 0.0 , 0.0 , 0.0 ],
+                            "scale"    : [ 50.0, 50.0, 1.0 ]
+                        }
+                    }
+                }
+            },
+            "ball" : 
+            {
+                "shader"    : "position",
+                "transform" :
+                {
+                    "location" : [ 0.0, 0.0, 3.0 ],
+                    "rotation" : [ 0.0, 0.0, 0.0 ],
+                    "scale"    : [ 1.0, 1.0, 1.0 ]
+                },
+                "mesh" :
+                {
+                    "ball" : 
+                    {
+                        "primative" : "sphere",
+                        "shader"    : "position",
+                        "transform" : 
+                        {
+                            "location" : [ 0.0, 0.0, 5.0 ],
+                            "rotation" : [ 0.0, 0.0, 0.0 ],
+                            "scale"    : [ 1.0, 1.0, 1.0 ]
+                        }
+                    }
+                }
+            },
+            "player 1" : 
+            {
+                "shader"    : "white",
+                "transform" :
+                {
+                    "location" : [ 0.0, 0.0, 3.0 ],
+                    "rotation" : [ 0.0, 0.0, 0.0 ],
+                    "scale"    : [ 1.0, 1.0, 1.0 ]
+                },
+                "mesh" :
+                {
+                    "ball" : 
+                    {
+                        "primative" : "plane",
+                        "shader"    : "white",
+                        "transform" : 
+                        {
+                            "location" : [ 15.0, 0.0, 5.0 ],
+                            "rotation" : [ 0.0 , 0.0, 0.0 ],
+                            "scale"    : [ 0.25, 2.5, 2.5 ]
+                        }
+                    }
+                }
+            },
+            "player 2" : 
+            {
+                "shader"    : "white",
+                "transform" :
+                {
+                    "location" : [ 0.0, 0.0, 3.0 ],
+                    "rotation" : [ 0.0, 0.0, 0.0 ],
+                    "scale"    : [ 1.0, 1.0, 1.0 ]
+                },
+                "mesh" :
+                {
+                    "ball" : 
+                    {
+                        "primative" : "plane",
+                        "shader"    : "white",
+                        "transform" : 
+                        {
+                            "location" : [ -15.0, 0.0, 5.0 ],
+                            "rotation" : [  0.0 , 0.0, 0.0 ],
+                            "scale"    : [  0.25, 2.5, 2.5 ]
+                        }
+                    }
+                }
+            }
+        },
+        "cameras" :
+        {
+            "camera" :
+            {
+                "fov" : 30.5,
+                "location" : [ 0.01, 0.001, 25.0 ],
+                "orientation" : [ 0.01, 0.01, -1.0 ],
+                "clip" :
+                {
+                    "near" : 0.1,
+                    "far"  : 1000.0
+                }
+            }
+        },
+        "lights" : [ ]
+    },
+    "renderer" : 
+    {
+        "name"        : "Solid color geometry",
+        "clear color" : [ 1.0, 1.0, 1.0, 1.0 ],
+        "attachments" :
+        {
+            "color" :
+            {
+                "description" : "< R, G, B >",
+                "format"      : "r8g8b8a8"
+            }
+        },
+        "nodes" :
+        {
+            "geometry" :
+            {
+                "out" : [ "color" ],
+                "data" :
+                {
+                    "type" : "render pass",
+                    "description" : "Render holdout and color",
+                    "in" : { "camera" : [ { "view" : "mat4" }, { "projection" : "mat4" } ] },
+                    "nodes" : 
+                    {
+                        "holdout" : 
+                        {
+                            "data" :
+                            {
+                                "type"     : "shader",  
+                                "vertex"   : "resources/shaders/holdout/vert.glsl",
+                                "fragment" : "resources/shaders/holdout/frag.glsl",
+                                "nodes" :
+                                {
+                                    "input assembler" : { "out" : [ "xyz" ] },
+                                    "camera" : { "out" : [ "view", "projection" ] },
+                                    "transform" : { "out" : [ "model" ] },
+                                    "geometry" :
+                                    {
+                                        "in"  : [ "xyz", "view", "projection", "model" ],
+                                        "out" : [ "color" ]
+                                    },
+                                    "color" : { "in"  : [ "color" ] }
+                                },
+                                "connections" : 
+                                [
+                                    [ "input assembler:xyz"     , "geometry:xyz" ],
+                                    [ "camera:view"             , "geometry:view" ],
+                                    [ "camera:projection"       , "geometry:projection" ],
+                                    [ "transform:model"         , "geometry:model" ],
+                                    [ "geometry:color"          , "color:color" ]
+                                ]
+                            }
+                        },
+                        "position" : 
+                        {
+                            "data" :
+                            {
+                                "type"     : "shader",  
+                                "vertex"   : "resources/shaders/position/vert.glsl",
+                                "fragment" : "resources/shaders/position/frag.glsl",
+                                "nodes" :
+                                {
+                                    "input assembler" : { "out" : [ "xyz" ] },
+                                    "camera" : { "out" : [ "view", "projection" ] },
+                                    "transform" : { "out" : [ "model" ] },
+                                    "geometry" :
+                                    {
+                                        "in"  : [ "xyz", "view", "projection", "model" ],
+                                        "out" : [ "color" ]
+                                    },
+                                    "color" : { "in"  : [ "color" ] }
+                                },
+                                "connections" : 
+                                [
+                                    [ "input assembler:xyz"     , "geometry:xyz" ],
+                                    [ "camera:view"             , "geometry:view" ],
+                                    [ "camera:projection"       , "geometry:projection" ],
+                                    [ "transform:model"         , "geometry:model" ],
+                                    [ "geometry:color"          , "color:color" ]
+                                ]
+                            }
+                        },
+                        "white" : 
+                        {
+                            "data" :
+                            {
+                                "type"     : "shader",  
+                                "vertex"   : "resources/shaders/white/vert.glsl",
+                                "fragment" : "resources/shaders/white/frag.glsl",
+                                "nodes" :
+                                {
+                                    "input assembler" : { "out" : [ "xyz" ] },
+                                    "camera" : { "out" : [ "view", "projection" ] },
+                                    "transform" : { "out" : [ "model" ] },
+                                    "geometry" :
+                                    {
+                                        "in"  : [ "xyz", "view", "projection", "model" ],
+                                        "out" : [ "color" ]
+                                    },
+                                    "color" : { "in"  : [ "color" ] }
+                                },
+                                "connections" : 
+                                [
+                                    [ "input assembler:xyz", "geometry:xyz" ],
+                                    [ "camera:view"        , "geometry:view" ],
+                                    [ "camera:projection"  , "geometry:projection" ],
+                                    [ "transform:model"    , "geometry:model" ],
+                                    [ "geometry:color"     , "color:color" ]
+                                ]
+                            }
+                        }
+                    },
+                    "connections" : [ ]
+                }
+            },
+            "framebuffer" : { "in" : [ "color" ] }
+        },
+        "connections" : [ [ "geometry:color", "framebuffer:color" ] ]
+    },
+    "debug" : 4,
+    "debug " :
+    {
+        "log limit"   : 4,
+        "shell limit" : 3
+    }
+}
